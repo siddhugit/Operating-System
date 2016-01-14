@@ -1,0 +1,33 @@
+Problem 1
+----------
+We know that Machine A is little-endian.
+
+1701998445 in binary is 01100101 01110010 01101111 01101101.
+So 01101101 ( least significant byte ) is at lower address and 01100101 is at higher address on A's memory.
+Hence argv[1] will be arranged in the following order on machine A.
+01101101 01101111 01110010 01100101 
+Converting each byte to decimal and comparing  their ASCII values we get 'more'
+
+Applying same approach for the second input ( i.e. 1936942444 ) we can compute second command line argument (which is 'less').
+
+(a) Machine B is big endian. Hence for first argument, 'm' is MSB on B and LSB on A whereas 'e'is LSB on B and MSB on A.
+And for the second argument, 'l' is MSB on B and LSB on A whereas 's'is LSB on B and MSB on A. And because of that we see two different outpts.
+
+(b) The command line arguments are 'more' and 'less'
+
+(c) Big-endian machine ( i.e. machine B ) will give the correct result because lower address characters or MSB will have precedence over higher address characters or LSB in comparing the two inputs.
+
+Problem 2
+---------
+First fit : 12 MB will fit into 20 MB, 10MB will fit into 10 MB and 9 MB will fit into 18 MB hole.
+Best fit : 12 MB will fit into 12 MB, 10 MB will fit into 10 MB and 9 MB will fit into 9 MB hole.
+Worst fit : 12 MB will fit into 20 MB, 10 MB will fit into 18 MB and 9 MB will fit into 15 MB hole.
+Next fit :  12 MB will fit into 20 MB, 10 MB will fit into 18 MB and 9 MB will fit into 9 MB hole.
+
+
+Problem 3
+---------
+(a) NRU : Page 2 because both R and M is 0.
+(b) FIFO :  Page 3 because it is first In.
+(c) LRU : Page 1 because is least recently referenced (at 265).
+(d) Second chance : Page 2 because page 3 and 0 loaded before page 2 but their R bit is 1.

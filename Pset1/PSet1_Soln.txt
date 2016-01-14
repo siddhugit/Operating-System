@@ -1,0 +1,137 @@
+Problem 1
+----------
+
+Multiprogramming is allocating CPU time and other resources to multiple 
+procceses in such a way that an illusion of concurrent execution of processes 
+is created on a computer.
+Two reasons of using multiprogramming are:
+(i) CPU can be utilized efficiently. E.g. CPU time can be allocated to other 
+    processes if process currently holding CPU is blocked on an I/O operation.
+(ii) Every process should get fair share of CPU time so that they do not become 
+     unresponsive. E.g. Process currently holding CPU can make other 
+     processes unresponsive for a long period of time.
+
+Problem 2
+----------
+
+(a) If we allow disabling interrupts in user mode then user processes may not 
+    yield CPU time or other resources hence should be allowed only in kernel 
+    mode.
+(b) Just reading the time will not create any issue hence can be allowed in 
+    user mode.
+(c) Altering time can create problems for other processes or operations which 
+    depend on system time (E.g. file creation time). Hence only kernel 
+    should handle it.
+(d) Changing memory map in user mode may cause processes interfering with each 
+    other's memory or address spaces which is not desirable. Hence, should be 
+    allowed only in kernel mode.
+ 
+
+Problem 3
+----------
+
+Priority inversion problem will not occur with round robin scheduling because 
+eventually process L will get CPU and it will then unlock mutex it was holding 
+and thus H will get unblocked. It will occur with priority scheduling when H is 
+spinning on trying to lock mutex and L does not get CPU so that it can unlock 
+the mutex it is holding because a higher priority process H is not yielding 
+the CPU.
+
+
+Problem 4
+----------
+
+The only way another process or thread can get CPU in a uniprocessor machine is 
+through interrupts. So in order to make both up() and down() routines of 
+Semaphore atomic we can disable interrupts when we enter and re-enable 
+interrupts before leaving the routines. Therefore at any point of time only one 
+process or thread can run up() or down() and during that time no other process 
+or thread will get CPU time until the process/thread currently executing up() or 
+down() is done and re-enable interrupts before leaving the routines and thus 
+making routines atomic. Below is the pseudo code shows how we can achieve it.
+
+struct Semaphore
+{
+	int value;
+	List list; // List of blocked processes or threads
+};
+
+down(Semaphore s)
+{
+	Disable_Interrupts();
+	if (s.value > 0) 
+	{
+		--s.value;
+	}
+	else
+	{
+		Insert(s.list,process_id);
+		sleep(); //block current process/thread
+	}
+	Enable_Interrupts();
+}
+
+up(Semaphore s)
+{
+	Disable_Interrupts();
+	if (isEmpty(s.list)) 
+	{
+		++s.value;
+	} 
+	else 
+	{
+		item = RemoveOneItem(s.list);
+		wakeup(item); //unblock a random blocked process/thread
+	}
+	Enable_Interrupts();
+}
+
+Problem 5
+----------
+
+First let's write a pseudo code and then we will prove that the following 
+definitions of up() and down() routines will correctly implement a 
+counting Semaphore.
+
+BinarySemaphore mutex = 1;
+BinarySemaphore block = 0;
+s.val = k;
+
+down(Semaphore s)
+{
+	down(mutex); //l1
+	--s.value;
+	if(s.value < 0)
+	{
+		up(mutex);
+		down(block); //l2
+		return;
+	}
+	up(mutex); //l3
+}
+
+up(Semaphore s)
+{
+	down(mutex); //l4
+	++s.value;
+	if(s.value <= 0)
+	{
+		up(block); //l5
+	}
+	else
+	{
+		up(mutex); //l6
+	}
+}
+
+At any point 'value' represents number of processes/threads that can call down() 
+without being blocked. Further call to down() will block the calling 
+process/thread at l1 or l2 unless up() is called. And calling up() will unblock 
+one blocked process/thread ( if any ) because of code at l5. Every call to up() 
+increments 'value' by one hence giving one more thread/process chance to call 
+down() without getting blocked. Hence the invariant is always maintained that a 
+positive value of 'value' is the number of processes/threads that can call 
+down() without being blocked. And using another binary semaphore (mutex) makes 
+sure that up() and down() operations are atomic and read and write to 'value' 
+is synchronized.
+

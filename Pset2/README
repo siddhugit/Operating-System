@@ -1,0 +1,45 @@
+Name : Siddharth Singh
+Harvard ID : 40897542
+DCE ID : @00251615
+Problem Set - 2
+
+        o I have implemented first fit algorithm and justification has 
+		been given in Outline document. 
+	
+	o 'make' command builds two executables
+		(1) memory : it has test cases for memory module
+		(2) shell : memory module integrated into shell program.
+		Below is submission details for memory allocator problem. 
+		
+	o Solution to Problem-5 is in "Led" folder which contains  only the  
+		modified file (main.c). It does contain other files from 
+		CodeWarrior project. 
+	
+
+The submitted files are:
+
+Outline:
+========
+Outline
+
+Make file:
+==========
+Makefile
+
+Typescript file:
+================
+typescript
+
+Source files:
+=============
+main.c shell.c memory.c commands.c  dateutil.c  error.c  
+
+Header files:
+=============
+memory.h commands.h  dateutil.h  error.h
+
+K70 Led Project
+================
+Only the modified file (main.c) in "Led" folder
+
+

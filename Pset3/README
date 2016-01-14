@@ -1,0 +1,43 @@
+Solutions to problems 1 through 3 are in pset3_soln.txt.
+
+The file system ( problem 4 ) source is in filesytem folder.
+The filesystem folders have two folders, one for source file (c source files) 
+and one for header files ( c header files ). Please add these files in a 
+codewarrior project to build and run it. There is no Makefile because this will 
+build on Unix machines as it has ed and buttons dependencies. 
+
+Please refer to Outline.pdf for design and documentation of this problem. 
+
+I've implemented 'list' command for extra credit. it lists all the files in the
+file system.
+
+The submitted files for filesystem problem are:
+
+filesystem/
+	Project_Headers/
+		btnfs.h  
+		commands.h  
+		cwfix.h  
+		derivative.h  
+		error.h  
+		fstring.h  
+		ledfs.h  
+		led.h  
+		memory.h  
+		mfs.h  
+		MK70F12.h  
+		pushbutton.h  
+		vfs.h
+	Sources/
+		btnfs.c
+		commands.c
+		error.c
+		fstring.c
+		led.c
+		ledfs.c
+		memory.c
+		mfs.c
+		pushbutton.c
+		shell.c
+		vfs.c
+

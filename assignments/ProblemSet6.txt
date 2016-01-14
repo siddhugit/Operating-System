@@ -1,0 +1,73 @@
+			Last revised 29-Aug-15
+
+			    Problem Set 6
+
+		 Harvard Extension School CSCI E-92:
+	     Principles of Operating Systems - Fall 2015
+
+		  Due: Midnight on December 6, 2015
+
+
+1. (200 Points) Freescale K70 Programming.  Write a C program (with
+embedded assembler as necessary) for the Freescale K70/MK70FN1M0 Tower
+Development Kit that implements the following constructs:
+
+  a. Use interrupts from the SysTick timer to implement a round-robin
+     scheduler.  Determine an appropriate quantum given our processor
+     speed and an approximate number of cycles required per average
+     instruction.  In order to schedule processes, your operating
+     system should maintain a process list with a process control
+     block (PCB) for each process.  The process list should be
+     organized as (one or more) circular linked lists of PCB's.
+
+     Each process should be identified by a process id (PID) number.
+     The PID number is returned when a new process is created and is
+     passed to all supervisor calls that act on processes (e.g. to
+     wait for a process, to kill a process).
+
+     Each PCB should contain sufficient information to save and
+     restore the state of the process, to identify the process (the
+     PID), to indicate the state of the process (running, ready,
+     blocked), to track the CPU time attributed to that process, to
+     maintain information required by the operating system on a
+     per-process basis (such as logical to physical device
+     assignments).  The state of the process will include all
+     registers that processes are allowed to change (possibly R0, R1,
+     R2, R3, R12, SP (R13), LR (R14), xPSR, PC (R15), the remaining
+     registers: R4 through R11, the floating-point registers: S0
+     through S15 and the FPSCR), the stack, etc.  You may find it most
+     convenient to save many (if not almost all) of the registers on
+     the stack rather than in the PCB.  Keep in mind that each process
+     will have its own stack.
+
+     Note that during processor reset, the ARM is running on the Main
+     stack (See B1.4.1 on page B1-623 in the ARMv7-M Architecture
+     Reference Manual, Errata markup, ARM DDI 0403Derrata 2010_Q3).
+     This implies that both process code and interrupt handlers will
+     be running on the same stack.  The SP is initialized in
+     __thumb_startup in startup.c (found at C:\Freescale\
+     CW MCU v10.2\MCU\ARM_EABI_Support\ewl\EWL_Runtime\Runtime_ARM\
+     Source\startup.c in a default installation).
+
+  b. Each process should be identified by a process id (PID) number.
+     The PID number is returned when a new process is created and is
+     passed to all supervisor calls that act on processes (e.g. to
+     wait for a process, to kill a process).  Implement the supervisor
+     calls to create a process (spawn or fork), to prematurely yield
+     the remainder of your quantum to the next process, to cause your
+     process to block, to awaken a blocked process, and to kill a
+     process.  Remember that when a new process is created, a new PCB
+     and stack must be created for that process.  Similary, when a
+     process ends (naturally or when killed), the storage used for its
+     PCB and for its stack must be reclaimed.  In addition, all
+     dynamically-allocated (malloc'ed) storage owned by the process
+     that is ending needs to be freed.
+
+  c. Using the interrupt-driven I/O drivers that you've already
+     developed, write an application that tests the supervisor calls
+     above by creating processes to accomplish the following tasks:
+     (1) copying from UART2 input to the LCD display using device
+     independent supervisor calls, (2) sending a message over UART2
+     output whenever pushbutton S2 is depressed, (3) using the
+     supervisor call for user timer events, flash the red LED on and
+     off every half a second (the LED will light once a second).

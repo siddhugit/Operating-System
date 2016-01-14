@@ -1,0 +1,33 @@
+Script started on Sat 19 Sep 2015 04:43:59 PM PDT
+]0;siddharth@ubuntu: ~/e92/tempsiddharth@ubuntu:~/e92/temp$ make clean
+rm -f *.o shell
+]0;siddharth@ubuntu: ~/e92/tempsiddharth@ubuntu:~/e92/temp$ make
+cc -Wall -c main.c
+cc -Wall -c dateutil.c
+cc -Wall -c commands.c
+cc -Wall -c error.c
+cc -Wall -o shell main.o dateutil.o commands.o error.o 
+]0;siddharth@ubuntu: ~/e92/tempsiddharth@ubuntu:~/e92/temp$ ./shell
+$ date    help
+Command	     Description					Usage
+-------	     -----------					-----
+date	     Print the date					date
+echo	     Echo arguments to the standard output		echo [args]
+help	     Print brief description of the shell commands	help
+exit	     Quit the shell					exit
+
+$ echo hello world
+hello world
+$ echo hello	wp orld
+hello world
+$ date
+September 19, 2015 23:45:11.337723
+$ date now
+Too many arguments
+$ date 
+Command Not Found
+$ 
+$ 
+$ exit
+]0;siddharth@ubuntu: ~/e92/tempsiddharth@ubuntu:~/e92/temp$ exit
+Script done on Sat 19 Sep 2015 04:45:48 PM PDT

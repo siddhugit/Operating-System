@@ -1,0 +1,179 @@
+			Last revised 29-Aug-15
+
+			    Problem Set 3
+
+		 Harvard Extension School CSCI E-92:
+	     Principles of Operating Systems - Fall 2015
+
+		  Due: Midnight on October 18, 2015
+
+
+1. (25 Points) Memory Management.
+
+The following program is run on two different computers with the same
+command line arguments.
+
+
+  #include <stdio.h>
+
+  int main(int argc, char *argv[]) {
+    printf("%d %d\n", *(int *)argv[1], *(int *)argv[2]);
+    return 0;
+  }
+
+
+On computer A, which has a Digital Equipment Corporation (DEC) Alpha
+processor, it produces this output:
+
+1701998445 1936942444
+
+
+On computer B, which is an IBM System/360, it produces this output:
+
+1836020325 1818588019
+
+
+  a. (10 Points) Why does the same program produce different outputs
+  on these two machines?  What is different about these computers?
+  Exactly how does this difference affect the output?
+
+  b. (5 Points) What command line was used in both cases?
+
+  c. (10 Points) If the following program was run with the same
+  command line arguments as for the program above, on which of these
+  computers would the printf output be correct (i.e., the printf
+  ourput would be a true statement)?
+
+
+  #include <stdio.h>
+
+  int main(int argc, char *argv[]) {
+    int before = *(int *)argv[1] < *(int *)argv[2];
+    printf("\"%s\" is %s \"%s\" in alphabetical order\n", 
+	   argv[1], before ? "before" : "not before", argv[2]);
+    return 0;
+  }
+
+
+2. (24 Points) Memory Allocation.  Tanenbaum 3/e 3.4 (Tanenbaum 2/e 4.5)
+
+  (6 Points) First fit for request (a), followed by (b), then (c).
+  (6 Points) Best fit for request (a), followed by (b), and (c).
+  (6 Points) Worst fit for request (a), followed by (b), and (c).
+  (6 Points) Next fit for request (a), followed by (b), and (c).
+
+3. (16 Points) Page Replacement Algorithms.  Tanenbaum 3/e 3.28
+(Tanenbaum 2/e 4.29)
+
+  (4 Points) NRU.
+  (4 Points) FIFO.
+  (4 Points) LRU.
+  (4 Points) Second chance.
+
+4. (150 Points) Input/Output Programming.  Design and code a
+device-independent system that allows input and/or output operations
+to a variety of hardware devices.  For this problem set, the supported
+devices will be the LEDs, the pushbuttons, and an in-memory file
+system based on your myMalloc and myFree infrastructure.
+
+This problem set should be implemented on the Freescale K70 Tower
+system.  Therefore, your current myMalloc and myFree functions need to
+be ported from Unix to the K70 environment.  Keep in mind that the K70
+has 128K bytes of static RAM and, therefore, the built-in malloc call
+supports a maximum size that is substantially less than 128K bytes.
+It is likely that the maximum size memory request for a successful
+system malloc call will be about 64K bytes.  Depending on how much RAM
+the system and your program uses, you may find that you are able to
+allocate substantially less than 64K bytes of memory.
+
+Because you will be using console I/O, when creating this CodeWarrior
+project specify "Debugger Console" under "I/O Support" in the
+"Language and Build Tools Options" screen.
+
+Your I/O system should be based on byte-size input and output
+operations, customarily named fgetc and fputc, respectively.  These
+calls require a file to be opened before operations are performed and
+closed after operations are performed.  The functions to perform those
+operations are customarily named fopen and fclose, respectively.
+Traditionally, fopen returns a pointer to an object that can be used
+to control the stream (let's refer to this as the "struct stream").
+Of course, your design does not need to use these same names nor does
+your design need to use exactly the same parameters or return values.
+
+The "struct stream" would contain all information necessary to perform
+the fgetc, fputc, and fclose operations correctly.  For the LEDs or
+the pushbuttons, it might include a pointer to a structure that has
+information about that kind of device (let's refer to this as the
+"struct device") and also a second field that indicates which specific
+device is open.  So, there might be three "struct devices" created:
+one for the LEDs, one for the pushbuttons, and one for the in-memory
+file system.  For the LEDs, the second field might indicate which LED
+is open (the orange, the yellow, the green, or the blue).  For the
+pushbuttons, the second field might indicate which pushbutton is open
+(SW1 or SW2).  The "struct device" might contain function pointers to
+routines for that specific device to perform fgetc, fputc, and fclose
+for that kind of device.  Those routines might be parameterized by the
+second field in the "struct stream" to identify the specific device
+(e.g. the specific LED or pushbutton).  For the in-memory file system,
+more information is needed to remember the state of the operation.
+
+You should design your own methodology for naming devices and files.
+For example, if you want to model your system after a Windows-like
+naming convention, you might name devices with a letter (or a short
+string) to specify the device, followed by a colon.  Similarly, a
+device that supports named files might use a name which starts with a
+letter (or a short string) to identify the device, followed by a
+colon, followed by the file name.  You should decide which characters
+are allowed in your file names and enforce those constraints.  Support
+for file name extensions is not required.
+
+You will also be implementing an in-memory file system based on your
+myMalloc and myFree infrastructure.  This file system will allow named
+files to exist in RAM.  You can decide how those files are structured.
+Probably the simplest implementation will be based on a linked-list of
+malloc'ed memory blocks.  Another faster, but more complicated
+implementation, might be based on an index similarly to how a Unix
+file system is based on an inode structure.  Further details on the
+in-memory file system will be provided in class and in section.
+
+In addition to supporting the fopen, fgetc, fputc, and fclose
+functions on your in-memory file system, you also need to support a
+create and a delete function.  The create function will create a named
+file on the in-memory file system and the delete function will delete
+a named file from the in-memory file system.  You are *not* required
+to implement an interface to allow the caller to see the names of all
+files in the in-memory file system (that would allow something like
+"ls" or "dir" to be written).  You are not required to implement any
+sort of nested directories/folders.
+
+Your design should specify the behavior when certain operations are
+attempted.  These include: (1) Can any device be opened simultaneously
+more than once?, (2) Can any file be opened simultaneously more than
+once?, (3) What happens if a file already contains some bytes and an
+fputc is issued to that file?  If in the beginning or middle, is the
+file truncated at that point or does the fputc simply overwrite bytes?
+If at the end, is the file extended?.
+
+Your implementation need not follow the same specifications as the
+Unix system calls of the same names, but it may be instructive to look
+at the documentation for those calls.  Feel free to simplify, alter,
+and/or extend the Unix calls as appropriate.
+
+So that we are able to test your device-independent I/O system, you
+must port your shell implementation from Unix to the K70 and add
+commands to your shell that call the fopen, fclose, fgetc, fputc,
+create, and delete system calls.  Don't try to get your gettimeofday
+and date commands working at this point in time.  Add an appropriate
+command for each of the fopen, fclose, fgetc, fputc, create and delete
+system calls.  Each command should issue the corresponding system call
+once.
+
+As always, all code should be heavily documented and commented.  All
+return codes and command line arguments should be checked and any
+errors appropriately handled.  The clarity and design of your code
+will count!
+
+(10 Points) Extra credit: Allow the names of files in a directory to
+be listed.
+
+(15 Points) Extra credit: Allow nested directories.

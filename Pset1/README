@@ -1,0 +1,34 @@
+Name : Siddharth Singh
+Harvard ID : 40897542
+DCE ID : @00251615
+Problem Set - 1
+
+Note :  Answers to problem 1 to 5 are in PSet1_Soln.txt. Below is submission 
+	details for problem 6 ( Shell implementation ). Please run 'make' to
+	build and 'make clean' to delete binary files. Please execute ./shell
+	to run the shell program. 
+	
+
+The submitted files are:
+
+Outline:
+========
+Outline
+
+Make file:
+==========
+Makefile
+
+Typescript file:
+================
+typescript
+
+Source files:
+=============
+main.c commands.c  dateutil.c  error.c  
+
+Header files:
+=============
+commands.h  dateutil.h  error.h
+
+

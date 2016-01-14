@@ -1,0 +1,164 @@
+			Last revised 29-Aug-15
+
+			    Problem Set 4
+
+		 Harvard Extension School CSCI E-92:
+	     Principles of Operating Systems - Fall 2015
+
+		  Due: Midnight on November 1, 2015
+
+
+1. (200 Points) Freescale K70 Programming.  Write a C program (with
+embedded assembler as necessary) for the Freescale K70/MK70FN1M0 Tower
+Development Kit that implements the following constructs.
+
+Starting with this Problem Set, you should no longer make any use of
+the fgetc, fputc, fputs, or fprintf calls (or any other built-in
+system calls to perform input or output).  Instead, your code should
+use your own I/O system.  Therefore, rather than performing I/O to the
+console window in the K70 IDE, you should perform I/O over the UART2
+serial port as defined in part "g" of the Problem Set below.  You may
+use the sscanf, sprintf, snprintf, vsscanf, vsprintf, and vsnprintf
+calls -- we will refer to these functions as "formatted I/O to string"
+functions.  If you are *not* using the formatted I/O to string
+functions, your projects should now be built using "No I/O" under I/O
+Support.  If you are using the formatted I/O to string functions, your
+projects should still be built using "Debugger Console" under I/O
+Support.
+
+  a. Using mcg.h and mcg.c, initialize all processor clocks and
+     transition to 120 MHz full speed core clock before running any
+     code in this problem set.  Also, the DDR clock is initialized to
+     run at 150 MHz.  NOTE: Changing the clock speeds will affect a
+     variety of clock dependent code (including UART baud rates and
+     timers).
+
+  b. Using sdram.h and sdram.c, initialize the off-chip SDRAM in the
+     Micron Technology MT47H64M16.
+
+  c. Modify your myMalloc and myFree to use the 128 MBytes of SDRAM
+     memory from SDRAM_START to SDRAM_END of size SDRAM_SIZE bytes.
+     These constants are #define'd in sdram.h.
+
+     Note that once you implement the TWR-LCD-RGB driver, you will
+     need to allocate its framebuffer from the 128 MBytes of SDRAM.
+     This can be accomplished by (1) pre-allocating the framebuffer in
+     SDRAM prior to establishing the limits of SDRAM available to
+     myMalloc or (2) using myMalloc to allocate the framebuffer.
+
+  d. Design a supervisor call architecture for all of your system
+     calls.  Include a document for a systems programmer that
+     describes how to invoke each of the supervisor calls that will be
+     implemented in your OS (these include supervisor calls for your
+     versions of malloc, free, fopen, fclose, fgetc, fputc, create,
+     and delete although they may be named differently).  Include a
+     design document that describes the way that supervisor calls are
+     implemented.  See the mechanism demonstrated in the programs
+     accessible from the class web site (under Hardware Releated
+     References, The Freescale ARM, Sample programs for the Kinetis
+     K70F120M/MK70FN1M0 (120 MHz)), Supervisor call (SVC) routines and
+     Supervisor call (SVC) demonstration main program).
+
+  e. Implement a supervisor call interface for all of your device
+     independent I/O system calls from Problem Set 3.  Extend your
+     device independent I/O supervisor calls to support all additional
+     devices implemented in your OS as required below.
+
+  f. Implement a supervisor call interface for your heap-based memory
+     allocation and deallocation performed through malloc and free.
+
+  g. Implement non-interrupt driven I/O (input and output) from/to
+     UART2 through the connector on the TWR-SER board.  Use busy
+     waiting to wait for input characters.  Before performing output,
+     wait for the output hardware FIFO to have room available for the
+     character.
+
+     Although you do not need to change the interrupt priority level
+     of SVCall for this problem set, you should be aware of the
+     interrupt priority level at which the supervisor call handler
+     code runs.  The supervisor call handler code (system handler 11
+     for exception number 11, SVCall) runs at an interrupt priority
+     defined by the high-order byte of SCB_SHPR2 (System Handler
+     Priority Register 2, SHPR2), as explained in B3.2.11, page B3-723
+     of the ARMv7-M Architecture Reference Manual, Errata markup, ARM
+     DDI 0403Derrata 2010_Q3.  Smaller interrupt priority numbers
+     denote higher priority.  Only an exception with a higher priority
+     can preempt the current priority (See B1.5.4 on page B1-635 in
+     the ARMv7-M Architecture Reference Manual, Errata markup, ARM DDI
+     0403Derrata 2010_Q3).  During processor reset, the interrupt
+     priority of the supervisor call handler code is set to zero.  As
+     a result, without changing the default interrupt priority of the
+     supervisor call, it is not interruptable.  In derivative.h,
+     SCB_SHPR2_PRI_11_MASK, SCB_SHPR2_PRI_11_SHIFT, and
+     SCB_SHPR2_PRI_11(x) are defined to allow access to the
+     appropriate field of this system control register.
+
+  h. Implement non-interrupt driven output to the four LED's.  Your
+     device-independent implementation of LED output should now be
+     accessible through your supervisor call interface.
+
+  i. Implement non-interrupt driven input from the two momentary
+     pushbuttons.  Your device-independent implementation of
+     pushbutton input should now be accessible through your supervisor
+     call interface.
+
+  j. Implement non-interrupt driven output to the TWR-LCD-RGB.
+     Integrate your implementation of TWR-LCD-RGB output into your
+     device independent I/O architecture.
+
+     Remember that the TWR-LCD-RGB requires a framebuffer that is
+     allocated in the 128 MBytes of SDRAM.  As noted above, this can
+     be accomplished by (1) pre-allocating the framebuffer in SDRAM
+     prior to establishing the limits of SDRAM that is available for
+     heap-based allocation or (2) using myMalloc to allocate the
+     framebuffer.
+
+  k. Implement non-interrupt driven input from the analog
+     potentiometer.  Integrate your implementation of analog
+     potentiometer input into your device independent I/O
+     architecture.
+
+  l. Implement non-interrupt driven input from the thermistor.
+     Integrate your implementation of thermistor intput into your
+     device independent I/O architecture.
+
+  m. Implement non-interrupt driven input from the four touch sensors.
+     Integrate your implementation of touch sensor input into your
+     device independent I/O architecture.
+
+  n. Implement input and output to the in-memory file system.
+     Integrate your implementation of the in-memory file system into
+     your device independent I/O architecture.  You have already
+     implemented this device.
+
+  o. Modify your shell and all shell commands to use your SVC
+     interface rather than directly calling your system calls.
+
+  p. Implement test programs that call all the supervisor calls above
+     to demonstrate that the system works.  All test programs must be
+     implemented as shell commands.  Here are some required shell
+     commands, but you are welcome to implement additional commands:
+
+     1. ser2lcd: Continuously copy characters from serial input to
+        LCD.  End on a ^D (control-D) input character.
+     2. touch2led: Continuously copy from each touch sensor to the
+        corresponding LED.  End when all four touch sensors are
+        "depressed."
+     3. pot2ser: Continuously output the value of the analog
+        potentiomemter to the serial device as a decimal or
+        hexadecimal number followed by a newline.  End on a value of
+        zero.
+     4. therm2ser: Continuously output the value of the thermistor to
+        the serial device as a decimal or hexadecimal number followed
+        by a newline.  End when SW1 is depressed.
+     5. pb2led: Continuously copy from SW1 to orange LED and SW2 to
+        yellow LED.  End when both SW1 and SW2 are depressed.
+
+  q. Call the "privUnprivileged" function (declared and defined in
+     priv.h and priv.c) in your main program after all devices have
+     been initialized and before your shell is invoked.  This will
+     start your shell running in Thread mode with Unprivileged
+     execution state.
+
+See the class web site for sample programs to perform all the tasks
+above at a basic level.

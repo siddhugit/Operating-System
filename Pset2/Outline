@@ -1,0 +1,90 @@
+     Author:    Siddharth Singh
+	 Date:	10/3/2015
+     Contains:	Design details for memory allocator
+===============================================================================
+
+Project: memory management
+
+Usage: 
+./shell
+./memory 
+
+Purpose : 
+=========
+
+Write a memory allocator which allocates and deallocates memory from a pool
+so that other processes can request allocator to allocate and deallocate memory.
+    o Memory allocator interface
+        o myMalloc - Allocates memory
+        o myFree - Deallocates memory
+        o memoryMap - prints current state of memory on standard output.
+
+Data Structure:
+===============
+
+A contiguous pool of memory available to allocator.
+A double-word aligned struct whose instances reside in the memory pool and 
+represents chunks of memory blocks which are either free or allocated.  
+
+First fit algorithm :
+=====================
+
+The memory pool is divided in to blocks of memory and at the beginning of each 
+block is the data structure described above. This data structure stores size of
+the block so if we advance to a memory location by number of bytes equal to size
+of block we reach to next block in the memory pool. Hence these blocks are 
+arranged in a singly linked list manner. So when we want allocate memory of
+a given size we start linked list traversal from start of memory pool ( which 
+will always be instance of header data structure ) and whenever we find a block
+that is free and whose size is greater than or equal to requested size we 
+allocate that memory.
+Similarly when we want to free a memory, we traverse the linked list and if
+we find a memory in the pool which is equal to requested memory and if it is 
+allocated the we set it free. Depending upon whether neighboring blocks are free
+or allocated we merge it with memory currently being freed.   
+
+Justification : In best fit entire memory is probed to find the smallest free
+memory that is appropriate. Also in worst fit entire memory is searched to find
+a biggest hole which can accommodate requested memory size. Where as in first
+fit we select very first hole which can accommodate requested size. Hence first
+fit is faster than worst fit and best fit. Next fit remembers places where it
+found holes of different sizes and begins it's next search from a place where it 
+previously found a given size. Due to this additional bookkeeping, next fit 
+gives slightly worse performance than first fit.
+Quick fit is the best alternative amongst the algorithms we have discussed here
+but it is complicated. First fit is simple in comparison to quick fit and hence 
+less error prone. So these are the reasons why I chose first fit for this 
+problem.      
+
+Error handling:
+===============
+
+o Reports if non-numeric size is passed to myMalloc.
+o Reports if  myMalloc cannot allocate memory ( e.g. big size memory is requested ).
+o Reports if non-numeric pointer is passed to myFree.
+o Reports if invalid memory is passed to myFree.
+o Reports if null pointer is freed.
+o Reports too many or too few arguments for myMalloc,myFree and memoryMap. 
+
+Typescript ( Test Cases ):
+==========================
+Run 'make clean' and 'make' to test clean build. 
+Memory module 
+	o Interleaved memory allocacations/deallocations and print memory map
+	o Allocating memory with size in hexadecimal (e.g. 0xFFFF)
+	o Freeing not a previously allocated memory(e.g. an invalid memory 0xFFFFFFFF)
+	o Freeing a null pointer
+	o Allocating zero sized memory
+	o Allocating a big size memory( > 1 MB)
+Shell testing
+	o malloc with non-numeric argument
+	o malloc with zero size memory
+	o malloc with argument in hexadecimal
+	o malloc a very big size memory ( > 1 MB)
+	o free a memory specified in hexadecimal
+	o free a null pointer
+	o free an invalid memory
+	o run date command and show memory map ( to demo myMalloc and my Free
+		working correctly)
+	o run interleaved malloc and free and then print memory map.
+

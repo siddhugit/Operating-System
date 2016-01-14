@@ -1,0 +1,221 @@
+			Last revised 29-Aug-15
+
+			    Problem Set 2
+
+		 Harvard Extension School CSCI E-92:
+	     Principles of Operating Systems - Fall 2015
+
+		   Due: Midnight on October 4, 2015
+
+
+1. (100 Points) Memory Management.  Using the C programming language,
+write code to implement memory allocation and deallocation.
+Externally there should be two visible interfaces: "myMalloc" and
+"myFree."  The myMalloc function is declared as taking an unsigned int
+as its only parameter and returning a pointer to void, as follows:
+
+	void *myMalloc(unsigned int size);
+
+The "size" parameter is the size in bytes of the storage needed by the
+caller.  The myMalloc function should allocate an appropriately sized
+region of memory and it should return a pointer to (i.e., the address
+of) the first byte of that region.  If the storage cannot be
+successfully allocated for any reason, the function should return a
+NULL pointer (i.e., the value 0).  If a request is made to allocate 0
+bytes of memory, the function should return a NULL pointer.  The
+allocated memory is not to be initialized.
+
+The pointer returned by myMalloc should always point to a region of
+memory that starts on an 8-byte (double-word) boundary.  This allows a
+user to place any data at the beginning of a myMalloc region --
+including data that requires a double-word boundary.  This requirement
+may cause you to round-up the amount of memory requested by the user
+so that the alignment requirement is satisfied.
+
+The myFree function is declared as taking a pointer to void as its
+only parameter and not returning anything, as follows:
+
+	void myFree(void *ptr);
+
+The "ptr" parameter is a pointer to a region of memory previously
+allocated by the myMalloc function.  The myFree function deallocates
+the entire region of memory pointed to by the parameter.  If the value
+of the parameter is NULL, the call has no effect.  If the "ptr"
+parameter does not point to a previously allocated region of memory,
+the call should have no effect.  A region of memory allocated by the
+myMalloc function should only be deallocated once.  Once a region of
+memory has been deallocated by calling myFree, the storage should not
+be accessed in any way by the calling program.  The myFree function
+should make the freed storage be available for a future call of
+myMalloc.
+
+Your program should be written in two modules (files).  One should
+contain the main program and any functions necessary to test the
+myMalloc and myFree functions.  The other should contain the myMalloc
+and myFree functions and any other functions needed by your
+implementation of myMalloc and myFree.  Part two of this Problem Set
+has more information about the testing performed by the main program.
+
+Your program should run on the "nice" computers at Harvard using the
+"gcc" GNU C compiler.  However, you should write your code so that it
+is portable to the Freescale ARM platform.  This portability will be
+achieved by having your program on the "nice" machines allocate a
+1MByte region of memory using the Unix malloc system call and then
+perform memory allocation and deallocation within that 1MByte region
+of memory.  When running on the real hardware platform, the region of
+memory from which allocation will occur will either be allocated using
+the system malloc call or will be defined by variables or constants in
+the code.  Your code should be written so that it can be relatively
+easily ported to a system where the basic C types have different sizes
+than on the "nice" computers.  This can be accomplished by using
+sizeof, typedef, #define, and const syntactic elements in your
+program.
+
+When your code is ported to the Freescale ARM platform and is running
+under your operating system, you will need to maintain information as
+to which process performed the myMalloc call.  That is, your internal
+data structure that maintains information about allocated regions of
+memory will need to include the identity of the process, or PID, that
+allocated the storage.  Your implementation must support at least 128
+distinct PIDs.  Only the process that allocated a particular region of
+memory will be allowed to successfully deallocate that region using
+myFree.  You should implement an accessor function named getCurrentPID
+that returns the PID of the current process.  For now, it should
+always return zero.  The value returned by this function will be used
+to tag each region of storage when that region is allocated via
+myMalloc.
+
+Keep in mind that you may need to maintain bookkeeping information in
+the 1MByte region of memory in order to be able to implement the
+myMalloc and myFree functions efficiently.  It is perfectly acceptable
+for your algorithm to effectively allocate more space than the caller
+requested and use the beginning of that space for bookkeeping
+information and pointers, etc.
+
+The code that you write should contain ample documentation in the
+three forms we discussed in class: (1) comments attached to lines of
+code or to code blocks to describe difficult to understand constructs
+or local algorithms, (2) interface specification documentation as a
+prefix to each function to describe the types and meanings of each
+parameter and the return value to the function and any side effects
+the function may have (including access or changes to global
+variables, I/O, manipulation of heap and data structures, etc.), and
+(3) an overview document separate from the program which gives
+information on the purpose, solution (algorithm), and use of the
+module.
+
+You should always follow code programming practice, including:
+    o Always use meaningful names for functions, variables, and
+      constants.
+    o Do not use magic numbers.  All constants should be declared with
+      initialization.
+    o Constant names should be written entirely in upper case with
+      underscores separating words.  Do not begin constant names with
+      an underscore.
+    o Variables should be written entirely in lower case except that
+      the first letter of words other than the first should be
+      capitalized.  Do not begin variable names with an underscore.
+    o Types (typedef'ed) should begin with an uppper case letter and
+      the first letter of all other words should be capitalized as
+      well.
+    o All code should modular and well structured.
+
+For the memory allocation routines you will be implementing for this
+assignment, you will need to find an appropriate compromise between
+code that efficiently utilizes the storage being allocated and freed
+and one in which the myMalloc and myFree functions are fast.  Clearly
+there are many algorithms that solve the memory allocation problem.
+We are not going to specify an required algorithm, but if you are
+looking for ideas, take a look at Section 3.2.3 (Section 4.2.1 in 2/e)
+concerning Memory Management with Bitmaps on pages 184 to 185 (pages
+199 to 200 in 2/e) of Tanenbaum, Section 3.2.3 (Section 4.2.2 in 2/e)
+concerning Memory Management with Linked Lists on pages 185 to 187
+(pages 200 to 202 in 2/e), and in Section 10.4.3 see the Buddy
+Algorithm described on pages 766 to 767 (pages 721 to 722 in 2/e).
+
+Remember that your code will *not* be graded solely on correctness.
+
+
+2. (20 Points) Memory Management Performance.  Add to the module
+containing your myMalloc and myFree functions a new function named
+"memoryMap" which outputs to stdout a map of all used and free regions
+in the 1MByte region of memory.  By running a succession of memory
+allocation and deallocation requests with calls to memoryMap after
+each call to a memory management routine, demonstrate that your memory
+allocation algorithm is allocating memory from an appropriate free
+memory region.  Justify the choice of your algorithm using data from
+the textbook (e.g., first fit vs. next fit vs. best fit vs. worst fit
+vs. quick fit, etc.) and from other sources to show why you chose the
+algorithm that you implemented.  That justification should show why
+the algorithm you chose is a good compromise between efficient stoage
+utilization and speed.
+
+
+3. (10 Points) Additional Shell Commands.  Add three new commands to
+your shell.  These commands are malloc, free, and memorymap.
+
+The malloc command should accept a single argument which is the number
+of bytes of memory to be allocated.  The argument should be able to be
+specified either as a decimal integer constant (of arbitrary length)
+or as a hexadecimal number (indicated by a prefix of 0x followed by an
+arbitrary length hexadecimal constant).  The alphabetic hexadecimal
+digits should be able to be specified in either upper or lower case.
+The malloc command should call myMalloc and output to stdout the
+address in hexadecimal of the storage allocated (i.e., the return
+value of myMalloc) if the call is successful.  The hexadecimal address
+should be output with a prefix of 0x followed by the hexadecimal
+constant followed by a newline character.  If the call is not
+successful, it should output an appropriate error message to stderr.
+
+The free command should accept a single argument which is the address
+of a region of memory previously allocated using myMalloc and then
+call myFree to deallocate that region of memory.  The address should
+be able to be specified either as a decimal integer constant (of
+arbitrary length) or as a hexadecimal number (indicated by a prefix of
+0x followed by an arbitrary length hexadecimal constant).  The
+alphabetic hexadecimal digits should be able to be specified in either
+upper or lower case.  After the call returns, a message should be
+output to stdout.
+
+The memorymap command should accept no arguments.  It will call
+memorymap to output the map of both allocated and free memory regions.
+
+Remember that your shell should check that the appropriate number of
+arguments are specified on the command line for each command.  If
+exactly one argument is needed, the shell needs to guarantee that only
+one argument -- no more and no less -- is specified.  The same is true
+if no arguments are appropriate for a command (i.e., the shell should
+guarantee that no arguments have been specified).
+
+You are able to use the the functions strtol and/or strtoul from
+stdlib.h in your solution for this problem set.
+
+
+4. (1 Point) Using myMalloc and myFree in your Shell.  After you are
+comfortable that your myMalloc and myFree functions are working
+correctly, convert your shell to use myMalloc instead of the system
+malloc, and myFree instead of the system free.
+
+
+5. (10 Points) Freescale K70 Programming.  Establish the Freescale K70
+Special Edition CodeWarrior for Microcontrollers 10.5 programming
+environment on an appropriate Windows computer.  When building this
+CodeWarrior project, specify "No I/O" under "I/O Support" in the
+"Language and Build Tools Options" screen.
+
+Write a C program for the Freescale K70 Tower Kit that flashes the
+four LEDs using non-interrupt driven output.  After your program
+completes its initialization, the Orange LED should be on and all the
+other LEDs should be off.  Each time pushbutton SW1 is depressed, the
+lit LED will rotate one position to the Yellow LED (i.e., only the
+Yellow LED will be lit after a single depression of SW1).  The next
+time pushbutton SW1 is depressed, only the Green LED will be
+illuminated.  The next time pushbutton SW1 is depressed, only the Blue
+LED will be illuminated.  Then, the process starts again the next time
+pushbutton SW1 is depressed (i.e., only the Orange LED will be
+illuminated).  In order to make sure that the LEDs rotate only a
+single position each time SW1 is pressed, two steps are necessary: (1)
+you will need to wait for the pushbutton to be released before another
+button press could cause the LEDs to rotate and (2) you will need to
+delay for a short while after you notice that the pushbutton has been
+pressed to eliminate false button presses due to contact bounce.

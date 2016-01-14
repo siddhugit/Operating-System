@@ -1,0 +1,121 @@
+			Last revised 29-Aug-15
+
+			Term Project Proposal
+
+		 Harvard Extension School CSCI E-92:
+	     Principles of Operating Systems - Fall 2015
+
+		  Due: Midnight on November 8, 2015
+
+
+1. (30 Points) Term Project Proposal.  Required from all students
+taking the course for credit.  Write a textual proposal describing the
+term project you wish to pursue.  The project should be an extension
+to the problem sets we are working on in class that are leading toward
+an operating system kernel to run on the Freescale K70 Tower Kit.  It
+should expand upon topics covered in class or in the readings.
+
+Please submit your term project proposal using "git" with the tag
+project-proposal and please submit the final term project with the tag
+term-project.
+
+One category of program ideas might be the implementation of one or
+more of the following operating system components:
+
+    o User identities and capabilities
+    o A complete semaphore implementation
+    o An advanced multiprogramming scheduler (e.g. adding priority
+      levels)
+    o If you've implemented a priority-based scheduler, you can choose
+      to add priority inheritance as an option (see the "Mars Rover
+      Pathfinder mission involving priority inversion" article on the
+      class web site for further information)
+    o A memory protection system
+    o Extend your serial port (UART) implementation to include flow
+      control (either software -- Control-S and Control-Q -- or
+      hardware -- CTS and RTS)
+    o Extend your serial port (UART) implementation to include
+      extended device attributes/characteristics (see stty)
+      (e.g. should characters be echoed when read using getc, should a
+      bell be output when the input buffer is full, what is the tab
+      spacing, output the appropriate number of spaces for a tab, how
+      many characters are in each line, should wrapping occur if line
+      size is reached) line wrapping occur, allow baud rate to be
+      altered)
+    o Add support for multiple serial ports and demonstrate this by
+      running a shell on each one
+    o Pipes for interprocess communication
+    o A mechanism for interprocessor communication
+    o A simple distributed OS concept using the RS232 port
+    o Dynamic device drivers
+    o Additional devices (e.g. the three-axis accelerometer, infrared
+      LEDs)
+    o Extended LCD capabilites (e.g. implementing windows, blinking
+      cursor)
+    o Additional TWR-LCD-RGB hardware features (e.g. the resistive
+      touch overlay, the four-way capacitive navigation, the graphics
+      window)
+    o Encryption
+    o Using Flash memory for an in-memory file system
+    o Using the SD card for an in-memory file system
+    o Management of time/date using the RTC (real-time clock)
+    o Add additional devices to your operating system.  We have a
+      variety of additional Freescale Tower boards available including
+      TWR-SENSOR-PAK (includes temperature/humidity sensor, ambient
+      light sensor, barometer, accelerometer, infrared receiver,
+      capacitive touch keypad), TWR-AUDIO-SGTL (audio peripheral
+      module with SGTL5000 codec), TWR-ADCDAC-LTC (high-precision
+      analog module), TWR-RF-SNAP (802.15.4 RF wireless mesh
+      networking module), TWR-SER2 (dual-role high-speed USB,
+      host-only USB, 2x Ethernet ports, serial-to-USB, RS232),
+      TWR-WIFI-RS2101 (802.11n Wi-Fi), TWR-MC-LV3PH (low-voltage,
+      three-phase motor control module), FSLBOT (Tower mechatronics
+      board and robot kit)
+    o Interface to external sensors and transducers with which you are
+      already familiar
+    o Per-process signals (in the style of Unix signals)
+    o Event logging
+    o OS alarms
+    o Use the Watchdog Timer to reset the processor if the system
+      should become unresponsive
+    o Use the PSP (process stack pointer) for user processes and the
+      MSP (main stack pointer) for handler code
+    o Ethernet communication capability.  Do not choose this option
+      unless you already have substantial experience with Ethernet
+      protocols.  (In the simplest case this might be an
+      implementation of TCP/IP and/or UDP/IP under your operating
+      system.  In more complex implementations, it might include FTP
+      or remote access to files over NFS, SSH, RCP, etc.  If remote
+      access to files were implemented, then a "real" shell that could
+      load programs would be possible.)
+    o Add hard links and symbolic links to your in-memory file system
+    o Add a new output driver for the LEDs that outputs characters in
+      Morse code
+    o Add a new input driver that decodes Morse code characters from
+      key presses of either the pushbuttons or the touch sensors
+    o Cross-process debugger.  One process can examine the saved
+      registers of another blocked process.  This project would
+      include the ability to block and wake another process, examine
+      and change its registers, examine and change memory, and
+      possibly disassemble machine code.
+
+The program should exhibit your ability to design and implement a
+significant operating system concept in a C/Assembler program.
+
+You should assume a starting point after our sixth assignment of an
+operating system kernel that provides: device independent I/O, memory
+allocation, and round-robin multiprocessing and scheduling using timer
+interrupts.
+
+If possible, try to choose a subject area that complements your
+personal or business interests.
+
+Discuss your project ideas with the teaching assistant or the
+professor to try to find an appropriate topic.  The proposal should
+describe the overall topic, the specific problem to be dealt with in
+the paper or program, the scope of the project, a preliminary
+break-down of the project into smaller tasks.  The proposal should
+describe the overall project, the functions/components/modules to be
+written, the algorithms to be created, how a user would interact with
+the program, what input the program will consume and what output the
+program will create.

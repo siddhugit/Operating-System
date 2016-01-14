@@ -1,0 +1,173 @@
+Script started on Sun 04 Oct 2015 06:45:29 PM PDT
+]0;siddharth@ubuntu: ~/e92/pset2siddharth@ubuntu:~/e92/pset2$ make clean
+rm -f *.o shell memory
+]0;siddharth@ubuntu: ~/e92/pset2siddharth@ubuntu:~/e92/pset2$ make
+gcc -Wall -g -c shell.c
+gcc -Wall -g -c dateutil.c
+gcc -Wall -g -c commands.c
+gcc -Wall -g -c error.c
+gcc -Wall -g -c memory.c
+gcc -Wall -g -o shell shell.o dateutil.o commands.o error.o memory.o
+gcc -Wall -g -c main.c
+gcc -Wall -g -o memory main.o error.o memory.o
+]0;siddharth@ubuntu: ~/e92/pset2siddharth@ubuntu:~/e92/pset2$ ./memory 
+
+Test Case# 1: Interleaved memory allocacations/deallocations and print memory map
+----------------------------------------------------------------------------------
+
+Allocated memory of size 4231 at 0xb74e2010
+Allocated memory of size 10487 at 0xb74e30a0
+Allocated memory of size 75934 at 0xb74e59a0
+Allocated memory of size 532432 at 0xb74f8248
+Allocated memory of size 343253 at 0xb757a220
+Deallocated memory 0xb74e30a0
+Deallocated memory 0xb74f8248
+Allocated memory of size 65762 at 0xb74f8248
+Allocated memory of size 43234 at 0xb7508338
+Deallocated memory 0xb74f8248
+Allocated memory of size 8364 at 0xb74e30a0
+
+Printing memory map after test case# 1
+
+location	pid	 free/allocated	     size(in bytes)
+--------	---	 --------------	     --------------
+0xb74e2010	0	 allocated	     4232
+0xb74e30a0	0	 allocated	     8368
+0xb74e5158	NA	 free		     2112
+0xb74e59a0	0	 allocated	     75936
+0xb74f8248	NA	 free		     65768
+0xb7508338	0	 allocated	     43240
+0xb7512c28	NA	 free		     423408
+0xb757a220	0	 allocated	     343256
+0xb75cdf00	NA	 free		     82184
+
+allocated: 475072 bytes
+free: 573504 bytes
+
+Test Case# 2: Allocating memory with size in hexadecimal (0xFFFF)
+------------------------------------------------------------------
+
+Allocated memory of size 65535 at 0xb74f8248
+
+Printing memory map after test case# 2
+
+location	pid	 free/allocated	     size(in bytes)
+--------	---	 --------------	     --------------
+0xb74e2010	0	 allocated	     4232
+0xb74e30a0	0	 allocated	     8368
+0xb74e5158	NA	 free		     2112
+0xb74e59a0	0	 allocated	     75936
+0xb74f8248	0	 allocated	     65536
+0xb7508250	NA	 free		     224
+0xb7508338	0	 allocated	     43240
+0xb7512c28	NA	 free		     423408
+0xb757a220	0	 allocated	     343256
+0xb75cdf00	NA	 free		     82184
+
+allocated: 540616 bytes
+free: 507960 bytes
+
+Test Case# 3: Freeing not a previously allocated memory(0xFFFFFFFF)
+--------------------------------------------------------
+
+Not a previously allocated memory
+
+Test Case# 4: Freeing a null pointer
+-------------------------------------------
+
+Deallocating null pointer is no-op
+
+Test Case# 5: Allocating zero sized memory
+-------------------------------------------
+
+(nil)
+
+Test Case# 6: Allocating memory of a very big size(1048576 bytes)
+-------------------------------------------
+
+Memory not available
+
+Printing memory map after all test cases
+
+location	pid	 free/allocated	     size(in bytes)
+--------	---	 --------------	     --------------
+0xb74e2010	0	 allocated	     4232
+0xb74e30a0	0	 allocated	     8368
+0xb74e5158	NA	 free		     2112
+0xb74e59a0	0	 allocated	     75936
+0xb74f8248	0	 allocated	     65536
+0xb7508250	NA	 free		     224
+0xb7508338	0	 allocated	     43240
+0xb7512c28	NA	 free		     423408
+0xb757a220	0	 allocated	     343256
+0xb75cdf00	NA	 free		     82184
+
+allocated: 540616 bytes
+free: 507960 bytes
+]0;siddharth@ubuntu: ~/e92/pset2siddharth@ubuntu:~/e92/pset2$ m[K./shell 
+$ malloc wewq    ewqe
+Not a valid argument
+$ malloc 0x  0
+(nil)
+$ malloc 0xFFF0
+0xb746a040
+$ M malloc 0 111   2000000
+Memory not available
+$ free 3074859072
+Memory freed successfully
+$ fee  ree 0
+Deallocating null pointer is no-op
+$ free 0xFFFFFFFF 0^[[D^[[D        ^[[D            A0A0A0A0
+Not a previously allocated memory
+$ date
+October 5, 2015 01:54:17.875697
+$ memorymap
+location	pid	 free/allocated	     size(in bytes)
+--------	---	 --------------	     --------------
+0xb746a010	0	 allocated	     16
+0xb746a028	0	 allocated	     8
+0xb746a038	NA	 free		     1048528
+
+allocated: 40 bytes
+free: 1048536 bytes
+$ malloc 43242
+0xb746a040
+$ malloc 4324
+0xb7474938
+$ malloc 6543543 
+0xb7475a28
+$ malloc 3249
+0xb7515648
+$ malloc 5433
+0xb7516308
+$ free 0xb7474938
+Memory freed successfully
+$ free 0xb7516308
+Memory freed successfully
+$ malloc 23432
+0xb7516308
+$ malloc 6456
+0xb751be98
+$ malloc 97423
+0xb751d7d8
+$ free 0xb7516308
+Memory freed successfully
+$ memorymap
+location	pid	 free/allocated	     size(in bytes)
+--------	---	 --------------	     --------------
+0xb746a010	0	 allocated	     16
+0xb746a028	0	 allocated	     8
+0xb746a040	0	 allocated	     43248
+0xb7474938	NA	 free		     4328
+0xb7475a28	0	 allocated	     654360
+0xb7515648	0	 allocated	     3256
+0xb7516308	NA	 free		     23432
+0xb751be98	0	 allocated	     6456
+0xb751d7d8	0	 allocated	     97424
+0xb7535470	NA	 free		     215960
+
+allocated: 804824 bytes
+free: 243744 bytes
+$ exit
+]0;siddharth@ubuntu: ~/e92/pset2siddharth@ubuntu:~/e92/pset2$ exit
+Script done on Sun 04 Oct 2015 06:55:58 PM PDT

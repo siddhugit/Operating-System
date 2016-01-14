@@ -1,0 +1,97 @@
+     Author:    Siddharth Singh
+	 Date:	9/19/2015
+     Contains:	Design details for Problem 6 (Shell implementation)
+===============================================================================
+
+Project: shell
+
+Usage: ./shell 
+
+Purpose : 
+=========
+
+Write a program which acts as a shell and add following features to it.
+    o Built in commands
+        o help - A brief description and usage of supported commands
+        o echo - Prints the text entered as arguments
+        o date - Prints current date and time in UTC
+        o exit - Exits the shell program
+
+Data Structure:
+===============
+
+An array of tuples. Each tuple consists of a strings which represents command
+name and pointer to a function which implements the command.
+
+Algorithm :
+===========
+
+The algorithm used to convert epoch time to date is as follows:
+First number of years elapsed is computed by subtracting number of seconds 
+in year i, where i is the iterator used until number of seconds left is 
+less than number of seconds in the year equal to current value of iterator.
+Now number of seconds left from above is used to compute months elapsed in the
+current year. Similar to year calculation, month is also calculated by 
+subtracting number of seconds in i-th month until number of seconds left is 
+less than number of seconds in month equal to current value of iterator. Number
+of seconds in a month in a year is relative to that year.
+days,hours etc computation is trivial and calculated by simply using division 
+and mod operators. 
+
+Design:
+=======
+
+Program reads from standard input until a new line is encountered. It then 
+parses the input line into whitespace separated arguments. These arguments are 
+dynamically allocated into memory. First argument is command name and it is
+searched in the static array and if found the arguments are passed to 
+corresponding function pointer and function is invoked. When function is done, 
+the memory allocated is freed and prompt re-appears on console waiting for user
+to enter a new command. Program exits when user executes 'exit' command.
+
+
+Error handling:
+===============
+
+o Reports bad or unsupported command name
+o Reports too many arguments for date and help. Allows arguments for exit 
+	though as user intends to exit anyways. 
+o Reports system call error
+    o gettimeofday
+    o malloc
+
+Typescript ( Test Cases ):
+==========================
+
+siddharth@ubuntu:~/e92/temp$ make  <--testing clean build-->
+cc -Wall -c main.c
+cc -Wall -c dateutil.c
+cc -Wall -c commands.c
+cc -Wall -c error.c
+cc -Wall -o shell main.o dateutil.o commands.o error.o 
+siddharth@ubuntu:~/e92/temp$ ./shell : <--testing run shell program-->
+$ 
+$ 
+$ help
+Command	     Description					Usage
+-------	     -----------					-----
+date	     Print the date					date
+echo	     Echo arguments to the standard output		echo [args]
+help	     Print brief description of the shell commands	help
+exit	     Quit the shell					exit
+$ echo hello world  <--testing echo command-->
+hello world
+$ echo hello	world <--testing echo command with tab between arguments
+hello world
+$ date <--testing date command-->
+September 19, 2015 23:45:11.337723
+$ date now <--testing too many argument-->
+Too many arguments
+$ dat <--testing bad command name-->
+Command Not Found
+$ 
+$ 
+$ exit   <--testing exit command-->
+siddharth@ubuntu:~/e92/temp$ exit <--testing exit shell program-->
+Script done on Sat 19 Sep 2015 04:45:48 PM PDT
+

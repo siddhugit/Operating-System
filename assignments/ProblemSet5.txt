@@ -1,0 +1,81 @@
+			Last revised 29-Aug-15
+
+			    Problem Set 5
+
+		 Harvard Extension School CSCI E-92:
+	     Principles of Operating Systems - Fall 2015
+
+		  Due: Midnight on November 15, 2015
+
+
+1. (200 Points) Freescale K70 Programming.  Write a C program (with
+embedded assembler as necessary) for the Freescale K70/MK70FN1M0 Tower
+Development Kit that implements the following constructs:
+
+  a. Timer routines that use interrupts to maintain the current time
+     and date.  A supervisor call should be implemented to allow the
+     time and date to be set and a second supervisor call should be
+     implemented to return the current time and date.  The time should
+     be maintained correctly down to a millisecond.  Your routines
+     should allow dates from at least the year 1900 to the year 3000.
+     You should define and document the format through which
+     parameters are passed to the supervisor call and returned from
+     the supervisor call.  The initial time and date will not be set
+     automatically; a user must issue the supervisor call to set the
+     time and date.
+
+  b. Interrupt-driven I/O from/to the user RS232 UART (UART2).  In
+     order to implement this, maintain two queues: one queue for input
+     characters (from the port to the K70) and one queue for output
+     characters (from the K70 to the port).  When a UART receiver
+     interrupt ("receiver full interrupt") occurs, read the character
+     from the UART data register and enqueue the character to the
+     input queue.  When the character input SVC assigned to this
+     serial I/O device is called, dequeue a character from the input
+     queue and return it to the user.  When the character output SVC
+     assigned to this serial I/O device is called, enqueue the
+     character to the output queue and make sure that the UART
+     transmitter interrupt is enabled.  When the UART transmitter
+     interrupt occurs, dequeue a character from the output queue and
+     send it to the UART data register.  If there are no more
+     characters in the output queue, disable transmitter interrupts.
+
+     In cases where the SVC action cannot be accomplished (for
+     example, an input SVC with no characters in the buffer or an
+     output SVC with the buffer full), busy wait for the condition to
+     clear.  Never busy wait in an interrupt routine.  If an interrupt
+     routine cannot complete its action (for example, if a UART
+     receiver interrupt occurs and the input queue is full or if a
+     UART transmitter interrupt occurs and the output queue is empty),
+     either discard the character that caused the interrupt and
+     possibly echo a bell character (control-g) back to the serial
+     port or don't output a character, respectively.  If you choose to
+     possibly echo a bell character on input queue full, whether or
+     not that behavior is performed should be enabled or disabled by a
+     physical device flag.  Think about how to cause a character to be
+     output on the corresponding output device.
+
+     All input and output from/to UART2 should now use
+     interrupt-driven I/O rather than non-interrupt driven (polled)
+     I/O.
+
+  c. Timer routines for a *second* timer that can be used by a user
+     through a supervisor call interface.  The user should be able to
+     set the timer time period and furnish a function to be called
+     from the interrupt routine when the timer interrupt occurs.  This
+     timer should be a one-shot -- that is, it should occur only once
+     after being requested, not continuously.  The user function to be
+     called should be quite simple since it is called from the
+     interrupt routine and may be running on the interrupt stack and
+     with elevated interrupt priority level.
+
+  d. Add a shell command to set the time and date.
+
+  e. Add a shell command to display the current time and date.
+
+  f. Implement one or more test programs that call the user timer
+     supervisor calls in problem "c" above to demonstrate their
+     functionality.
+
+See the class web site for sample programs to perform all the tasks
+above at a basic level.
